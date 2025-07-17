@@ -1,4 +1,4 @@
-#!/home/xhy/catkin_ws/xhy_env/bin/python
+#!/home/xhy/xhy_env/bin/python
 import rospy
 import cv2
 import numpy as np

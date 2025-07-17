@@ -1,4 +1,4 @@
-#!/home/xhy/catkin_ws/xhy_env/bin/python
+#!/home/xhy/xhy_env/bin/python
 import rospy
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
