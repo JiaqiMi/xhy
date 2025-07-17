@@ -57,7 +57,7 @@ class StereoDepthNode:
         self.ts.registerCallback(self.callback)
 
         # 可选：发布深度图
-        self.depth_pub = rospy.Publisher("/stereo/depth_image", Image, queue_size=1)
+        # self.depth_pub = rospy.Publisher("/stereo/depth_image", Image, queue_size=1)
 
         # Publish the target message
         self.target_message = rospy.Publisher("/obj/target_message", TargetDetection, queue_size=1)
@@ -127,8 +127,9 @@ class StereoDepthNode:
             if 0 <= u < disparity.shape[1] and 0 <= v < disparity.shape[0]:
                 X, Y, Z = pixel_to_camera_coords(u, v, depth, self.fx, self.fy, self.cx, self.cy)
                 if X is not None:
-                    rospy.loginfo("Valid target: class=%s conf=%.2f -> X=%.2f Y=%.2f Z=%.2f",
-                                  self.target_class, self.target_conf, X, Y, Z)
+                    rospy.loginfo(
+                        "Valid target: class=%s conf=%.2f -> X=%.2f Y=%.2f Z=%.2f", \
+                        self.target_class, self.target_conf, X, Y, Z)
                 else:
                     rospy.logwarn("Valid location of objection.")
             else:
@@ -139,12 +140,14 @@ class StereoDepthNode:
         try:
             depth_msg = self.bridge.cv2_to_imgmsg(depth, encoding="32FC1")
             depth_msg.header = left_img_msg.header
-            self.depth_pub.publish(depth_msg)
+            # self.depth_pub.publish(depth_msg)
 
             # 发布target message
             msg = TargetDetection()
-            msg.u = 0.0
-            msg.v = Z
+            msg.x = 0.0
+            msg.y = 0.0
+            msg.z = 0.0
+            msg.type = 'center'
             msg.conf = self.target_conf
             msg.class_name = self.target_class
             self.target_message.publish(msg)
