@@ -1,0 +1,21 @@
+# 忽略所有 .log 文件
+*.log
+
+# 忽略 build 文件夹
+build/
+
+# 忽略所有 __pycache__ 文件夹
+__pycache__/
+
+# 忽略 Mac 的系统文件
+.DS_Store
+
+# 忽略 Jupyter notebook 的检查点
+.ipynb_checkpoints/
+
+# 忽略某个具体文件
+secret_config.py
+
+# 忽略训练数据
+*.jpg
+*.mkv
