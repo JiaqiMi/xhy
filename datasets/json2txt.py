@@ -1,3 +1,8 @@
+"""
+将Labelme标注的json文件转化成VOC格式的标签文件, txt格式
+并将同名文件保存到指定路径
+"""
+
 import os
 import json
 from PIL import Image
@@ -6,14 +11,20 @@ from PIL import Image
 IMAGE_EXTS = ['.jpg', '.jpeg', '.png']
 
 # 指定路径
-input_dir = 'raw_data/images/left_keep'  # 替换为你的数据路径，如 './dataset'
-output_label_dir = './datasets/labels'
+input_dir = './images/holes_labeled'            # 存放原始数据的路径，包含json和jpg文件
+output_dir = './xhy0718-holes'                  # 新数据集label存放路径
+
+
+output_label_dir = os.path.join(output_dir, 'label-all')
+output_image_dir = os.path.join(output_dir, 'image-all')
 os.makedirs(output_label_dir, exist_ok=True)
+os.makedirs(output_image_dir, exist_ok=True)
 
 # 分类名与ID映射（一定要你手动确认顺序）
 class_name_to_id = {
-    "red_ball": 0,
-    "blue_ball": 1,
+    "red": 0,
+    "green": 1,
+    "black": 2
 }
 
 
@@ -57,6 +68,9 @@ for file in os.listdir(input_dir):
         # 打开图片获取尺寸
         with Image.open(image_path) as img:
             img_width, img_height = img.size
+            
+            # 将对应图片进行保存
+            img.save(os.path.join(output_image_dir, image_name + ext))
 
         # 读取标注
         with open(json_path, 'r', encoding='utf-8') as f:
@@ -78,5 +92,7 @@ for file in os.listdir(input_dir):
         out_label_path = os.path.join(output_label_dir, image_name + '.txt')
         with open(out_label_path, 'w') as out_file:
             out_file.write('\n'.join(label_lines))
+            
+        
 
 print("✅ 转换完成，YOLO标签保存在:", output_label_dir)

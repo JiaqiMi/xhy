@@ -3,12 +3,12 @@ import random
 import shutil
 
 # 配置参数
-source_image_dir = 'raw_data/XHY/images'  # 原始文件夹路径，如 './images'
-source_label_dir = 'raw_data/XHY/labels'  # 原始文件夹路径，如 './images'
-target_image_dir1 = 'under_water_objections/images/train'       # 第一部分输出路径
-target_image_dir2 = 'under_water_objections/images/test'         # 第二部分输出路径
-target_label_dir1 = 'under_water_objections/labels/train'       # 第一部分输出路径
-target_label_dir2 = 'under_water_objections/labels/test'         # 第二部分输出路径
+source_image_dir = 'xhy0718-holes/image-all'          # 原始文件夹路径，如 './images'
+source_label_dir = 'xhy0718-holes/label-all'          # 原始文件夹路径，如 './images'
+target_image_dir1 = 'xhy0718-holes/images/train'       # 第一部分输出路径
+target_image_dir2 = 'xhy0718-holes/images/test'        # 第二部分输出路径
+target_label_dir1 = 'xhy0718-holes/labels/train'       # 第一部分输出路径
+target_label_dir2 = 'xhy0718-holes/labels/test'        # 第二部分输出路径
 split_ratio = 0.8                  # 比例，80%用于 train，20%用于 val
 
 # 创建输出目录

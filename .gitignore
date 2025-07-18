@@ -19,3 +19,4 @@ secret_config.py
 # 忽略训练数据
 *.jpg
 *.mkv
+*.json
