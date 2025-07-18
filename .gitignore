@@ -20,3 +20,5 @@ secret_config.py
 *.jpg
 *.mkv
 *.json
+*.zip
+*.txt
