@@ -11,20 +11,28 @@ from PIL import Image
 IMAGE_EXTS = ['.jpg', '.jpeg', '.png']
 
 # 指定路径
-input_dir = './images/holes_labeled'            # 存放原始数据的路径，包含json和jpg文件
-output_dir = './xhy0718-holes'                  # 新数据集label存放路径
+input_dir = './images/shapes_labeled'            # 存放原始数据的路径，包含json和jpg文件
+output_dir = './xhy0718-shapes'                  # 新数据集label存放路径
 
 
+os.makedirs(output_dir, exist_ok=True)
 output_label_dir = os.path.join(output_dir, 'label-all')
 output_image_dir = os.path.join(output_dir, 'image-all')
 os.makedirs(output_label_dir, exist_ok=True)
 os.makedirs(output_image_dir, exist_ok=True)
 
 # 分类名与ID映射（一定要你手动确认顺序）
+
+# class_name_to_id = {
+#     "red": 0,
+#     "green": 1,
+#     "black": 2
+# }
+
 class_name_to_id = {
-    "red": 0,
-    "green": 1,
-    "black": 2
+    "circle": 0,
+    "rectangle": 1,
+    "triangle": 2
 }
 
 
@@ -95,4 +103,4 @@ for file in os.listdir(input_dir):
             
         
 
-print("✅ 转换完成，YOLO标签保存在:", output_label_dir)
+print("✅ 转换完成, YOLO标签保存在:", output_label_dir)

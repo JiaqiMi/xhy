@@ -39,5 +39,7 @@ def split_stereo_video(video_path, output_dir='images'):
 if __name__ == '__main__':
     # 替换成你自己的mkv文件路径
     video_file = './video/my_video-3.mkv'
-    output_dir='images/holes'
+    output_dir='images/balls'
+    
+    os.makedirs(output_dir, exist_ok=True)
     split_stereo_video(video_file, output_dir)
