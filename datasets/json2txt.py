@@ -11,8 +11,8 @@ from PIL import Image
 IMAGE_EXTS = ['.jpg', '.jpeg', '.png']
 
 # 指定路径
-input_dir = './images/shapes_labeled'            # 存放原始数据的路径，包含json和jpg文件
-output_dir = './xhy0718-shapes'                  # 新数据集label存放路径
+input_dir = './images/balls_labeled'            # 存放原始数据的路径，包含json和jpg文件
+output_dir = './xhy0718-balls'                  # 新数据集label存放路径
 
 
 os.makedirs(output_dir, exist_ok=True)
@@ -30,9 +30,8 @@ os.makedirs(output_image_dir, exist_ok=True)
 # }
 
 class_name_to_id = {
-    "circle": 0,
-    "rectangle": 1,
-    "triangle": 2
+    "red": 0,
+    "blue": 1,
 }
 
 

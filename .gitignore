@@ -17,6 +17,10 @@ __pycache__/
 secret_config.py
 
 # 忽略训练数据
+datasets/images/
+datasets/video/
+datasets/xhy0718-holes/
+datasets/xhy0718-shapes/
 *.jpg
 *.mkv
 *.json
