@@ -31,3 +31,4 @@ train_models/
 *.mkv
 *.json
 *.zip
+*.pt
