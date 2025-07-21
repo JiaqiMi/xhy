@@ -21,8 +21,13 @@ datasets/images/
 datasets/video/
 datasets/xhy0718-holes/
 datasets/xhy0718-shapes/
+datasets/xhy0718-balls/
+
+# 忽略模型
+train_models/
+
+
 *.jpg
 *.mkv
 *.json
 *.zip
-*.txt

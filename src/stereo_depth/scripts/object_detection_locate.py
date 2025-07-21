@@ -27,19 +27,27 @@ class StereoDepthNode:
         rospy.init_node("stereo_depth", anonymous=True)
 
         # 相机参数（来自你的标定结果）
-        # air 
+        # air - old
         # self.fx = 218.510120
         # self.fy = 218.510120
         # self.cx = 175.566744
         # self.cy = 124.191102
         # self.baseline = 13.041602 / 218.510120  # m
 
-        # water
-        self.fx = 360.607260
-        self.fy = 360.607260
-        self.cx = 177.368463
-        self.cy = 121.148735
-        self.baseline = 21.507233 / 360.607260  # m
+        # water - old
+        # self.fx = 360.607260
+        # self.fy = 360.607260
+        # self.cx = 177.368463
+        # self.cy = 121.148735
+        # self.baseline = 21.507233 / 360.607260  # m
+        
+        # air - new
+        self.fx = 572.993971
+        self.fy = 572.993971
+        self.cx = 374.534946
+        self.cy = 271.474743
+        self.baseline = 34.309807 / 572.993971  # m
+        
 
         self.bridge = CvBridge()
         self.target_uv = None  # 新增：保存来自YOLO节点的目标(u, v)
@@ -109,16 +117,16 @@ class StereoDepthNode:
 
 
         # calculate the center pixel location
-        (height, width) = disparity.shape
-        X, Y, Z = pixel_to_camera_coords(
-            u=width//2,
-            v=height//2,
-            depth=depth,
-            fx=self.fx,
-            fy=self.fy,
-            cx=self.cx,
-            cy=self.cy
-        )
+        # (height, width) = disparity.shape
+        # X, Y, Z = pixel_to_camera_coords(
+        #     u=width//2,
+        #     v=height//2,
+        #     depth=depth,
+        #     fx=self.fx,
+        #     fy=self.fy,
+        #     cx=self.cx,
+        #     cy=self.cy
+        # )
         # print("X: {}, Y: {}, Z:{}".format(X, Y, Z))
 
         # 判断是否有来自YOLO的像素坐标
@@ -137,22 +145,22 @@ class StereoDepthNode:
         
 
         # 发布深度图
-        try:
-            depth_msg = self.bridge.cv2_to_imgmsg(depth, encoding="32FC1")
-            depth_msg.header = left_img_msg.header
-            # self.depth_pub.publish(depth_msg)
+        # try:
+        #     depth_msg = self.bridge.cv2_to_imgmsg(depth, encoding="32FC1")
+        #     depth_msg.header = left_img_msg.header
+        #     # self.depth_pub.publish(depth_msg)
 
-            # 发布target message
-            msg = TargetDetection()
-            msg.x = 0.0
-            msg.y = 0.0
-            msg.z = 0.0
-            msg.type = 'center'
-            msg.conf = self.target_conf
-            msg.class_name = self.target_class
-            self.target_message.publish(msg)
-        except Exception as e:
-            rospy.logerr("Error publishing depth: %s", str(e))
+        #     # 发布target message
+        #     msg = TargetDetection()
+        #     msg.x = 0.0
+        #     msg.y = 0.0
+        #     msg.z = 0.0
+        #     msg.type = 'center'
+        #     msg.conf = self.target_conf
+        #     msg.class_name = self.target_class
+        #     self.target_message.publish(msg)
+        # except Exception as e:
+        #     rospy.logerr("Error publishing depth: %s", str(e))
 
         # 可视化（归一化视差）
         # disp_vis = cv2.normalize(disparity, None, 0, 255, cv2.NORM_MINMAX)
