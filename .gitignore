@@ -25,6 +25,7 @@ datasets/xhy0718-balls/
 
 # 忽略模型
 train_models/
+models/
 
 
 *.jpg

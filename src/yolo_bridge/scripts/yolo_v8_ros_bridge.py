@@ -11,7 +11,7 @@ from geometry_msgs.msg import PointStamped
 class YOLOv8Detector:
     def __init__(self):
         rospy.init_node("yolov8_detector", anonymous=True)
-        self.model = YOLO("/home/xhy/catkin_ws/yolov8n.pt")
+        self.model = YOLO("/home/xhy/catkin_ws/models/shapes_model0719.pt")
         self.bridge = CvBridge()
 
         rospy.Subscriber("/left/image_raw", Image, self.image_callback)
