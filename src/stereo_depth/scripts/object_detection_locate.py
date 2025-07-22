@@ -13,7 +13,7 @@ from stereo_depth.msg import TargetDetection
 
 
 def pixel_to_camera_coords(u, v, depth, fx, fy, cx, cy):
-    """calculate the location in camera axis of any pixel in the future."""
+    """calculate the location in camera axis of any pixel in picture."""
     Z = depth[v][u]  # 注意 OpenCV 顺序是 (row, col) = (v, u)
     if Z == 0:
         return None  # 无效深度
@@ -42,15 +42,21 @@ class StereoDepthNode:
         # self.baseline = 21.507233 / 360.607260  # m
         
         # air - new
-        self.fx = 572.993971
-        self.fy = 572.993971
-        self.cx = 374.534946
-        self.cy = 271.474743
-        self.baseline = 34.309807 / 572.993971  # m
+        # self.fx = 572.993971
+        # self.fy = 572.993971
+        # self.cx = 374.534946
+        # self.cy = 271.474743
+        # self.baseline = 34.309807 / 572.993971  # m
         
-
+        # water - new
+        self.fx = 1080.689861
+        self.fy = 1080.689861
+        self.cx = 559.908498
+        self.cy = 261.932663
+        self.baseline = 81.420154 / 1080.689861  # m
+        
         self.bridge = CvBridge()
-        self.target_uv = None  # 新增：保存来自YOLO节点的目标(u, v)
+        self.target_uv = None  
         self.target_conf = 0.0
         self.target_class = ""
 
@@ -144,23 +150,23 @@ class StereoDepthNode:
                 rospy.logwarn("Target pixel coordinates are out of bounds.")
         
 
-        # 发布深度图
-        # try:
-        #     depth_msg = self.bridge.cv2_to_imgmsg(depth, encoding="32FC1")
-        #     depth_msg.header = left_img_msg.header
-        #     # self.depth_pub.publish(depth_msg)
+        # 发布相机事件
+        try:
+            depth_msg = self.bridge.cv2_to_imgmsg(depth, encoding="32FC1")
+            depth_msg.header = left_img_msg.header
+            # self.depth_pub.publish(depth_msg)
 
-        #     # 发布target message
-        #     msg = TargetDetection()
-        #     msg.x = 0.0
-        #     msg.y = 0.0
-        #     msg.z = 0.0
-        #     msg.type = 'center'
-        #     msg.conf = self.target_conf
-        #     msg.class_name = self.target_class
-        #     self.target_message.publish(msg)
-        # except Exception as e:
-        #     rospy.logerr("Error publishing depth: %s", str(e))
+            # 发布target message
+            msg = TargetDetection()
+            msg.x = X
+            msg.y = Y
+            msg.z = Z
+            msg.type = 'center'
+            msg.conf = self.target_conf
+            msg.class_name = self.target_class
+            self.target_message.publish(msg)
+        except Exception as e:
+            rospy.logerr("Error publishing depth: %s", str(e))
 
         # 可视化（归一化视差）
         # disp_vis = cv2.normalize(disparity, None, 0, 255, cv2.NORM_MINMAX)
