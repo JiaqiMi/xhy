@@ -16,6 +16,9 @@ __pycache__/
 # 忽略某个具体文件
 secret_config.py
 
+# 忽略特定文件夹
+test/
+
 # 忽略训练数据
 datasets/images/
 datasets/video/
@@ -26,6 +29,8 @@ datasets/xhy0718-balls/
 # 忽略模型
 train_models/
 models/
+
+
 
 # 豁免相机参数文件
 !camera/*.txt
