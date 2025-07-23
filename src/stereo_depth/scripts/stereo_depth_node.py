@@ -1,4 +1,4 @@
-#!/home/xhy/xhy_env/bin/python
+#!/home/xhy/xhy_env36/bin/python
 # -*- coding: utf-8 -*-
 
 import rospy

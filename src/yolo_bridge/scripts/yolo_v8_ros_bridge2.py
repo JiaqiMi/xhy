@@ -1,7 +1,8 @@
-#!/home/xhy/xhy_env/bin/python
+#!/home/xhy/xhy_env36/bin/python
 import tensorrt as trt
 import pycuda.driver as cuda
-import pycuda.autoinit  # 会自动初始化 CUDA 上下文
+# import pycuda.autoinit  # 会自动初始化 CUDA 上下文
+import pycuda.driver as cuda
 import numpy as np
 import cv2
 import rospy
@@ -12,9 +13,14 @@ from torchvision.ops import nms
 import torch
 
 TRT_LOGGER = trt.Logger(trt.Logger.INFO)
+cuda.init()  # 初始化 CUDA 驱动
+device = cuda.Device(0)  # 默认设备
+context_cuda = device.make_context()  # 创建 CUDA 上下文（全局上下文）
 
 class TRT_YOLOv8:
     def __init__(self, engine_path, input_shape=(1,3,640,640)):
+        
+        self.context_cuda = context_cuda  # 保存上下文，后面激活用
         # 1) 反序列化 engine
         with open(engine_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
             self.engine = runtime.deserialize_cuda_engine(f.read())
@@ -41,6 +47,7 @@ class TRT_YOLOv8:
         return img
 
     def infer(self, img_bgr):
+        self.context_cuda.push()
         # 4) 预处理
         self.h_input[:] = self.preprocess(img_bgr)
 
@@ -53,6 +60,7 @@ class TRT_YOLOv8:
         # 7) HtoD
         cuda.memcpy_dtoh(self.h_output, self.d_output)
         # h_output 现在是 shape (1, max_det, C)
+        self.context_cuda.pop()
         return self.h_output[0]
 
     def postprocess(self, dets, conf_thres=0.25, iou_thres=0.45):
@@ -73,6 +81,9 @@ class TRT_YOLOv8:
             results.append((boxes[i].cpu().numpy().tolist(),
                             float(scores[i]), int(cls_ids[i])))
         return results
+    
+    def __del__(self):
+        self.context.pop()
 
 class YOLONode:
     def __init__(self):
@@ -98,7 +109,11 @@ class YOLONode:
             pt.header.frame_id = str(cls_id)
             pt.point.x = u; pt.point.y = v; pt.point.z = score
             self.pub.publish(pt)
-        # 可视化同前…
+        
+        # # 可视化
+        # annotated = results[0].plot()
+        # cv2.imshow("YOLOv8 Detection", annotated)
+        # cv2.waitKey(1)
 
 if __name__=="__main__":
     YOLONode()
