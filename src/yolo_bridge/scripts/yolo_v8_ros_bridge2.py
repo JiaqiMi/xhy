@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/xhy/xhy_env/bin/python
 import tensorrt as trt
 import pycuda.driver as cuda
 import pycuda.autoinit  # 会自动初始化 CUDA 上下文
