@@ -8,6 +8,8 @@ string class_name                  # 目标名称
 # frame_id camera
 # x y z 米
 # 四元数0 0 0 1
+
+
 # 置信度0-1
 # type center/edge
 # class_name: rectangle/circle/triangle：形状
