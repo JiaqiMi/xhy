@@ -1,0 +1,23 @@
+<launch>
+
+    <!-- 启动 USB 相机 -->
+    <node pkg="usb_cam" type="usb_cam_node" name="usb_cam" output="screen">
+        <param name="video_device" value="/dev/video0" />
+        <param name="pixel_format" value="mjpeg" />
+        <param name="image_width" value="1280" />
+        <param name="image_height" value="480" />
+    </node>
+
+    <!-- 图像左右分割节点 -->
+    <node pkg="stereo_splitter" type="split_stereo_image.py" name="split_stereo_image" output="screen" />
+
+    <!-- 执行 YOLOv8 目标检测（使用 LD_PRELOAD） -->
+    <node pkg="yolo_bridge" type="yolo_wrapper.sh" name="yolov8_tensorrt" output="screen" launch-prefix="bash" />
+        <!-- 传入私有参数 -->
+        <param name="detect_mode" value="2" />
+        <param name="top_k" value="5" />
+        <param name="visualization" value="false" />
+    <!-- 目标点空间定位 -->
+    <!-- ode pkg="sterer_depth" type="object_detection_locate.py" name="object_detection_locate" output="screen" / -->
+
+</launch>
