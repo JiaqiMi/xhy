@@ -11,7 +11,7 @@ from std_msgs.msg import Header
 from cv_bridge import CvBridge
 from geometry_msgs.msg import PointStamped
 
-DetectMode = rospy.get_param('~detect_mode', 1)  # 下潜深度，单位米
+DetectMode = rospy.get_param('~detect_mode', 1)
 
 class YOLOv8Detector:
     def __init__(self):

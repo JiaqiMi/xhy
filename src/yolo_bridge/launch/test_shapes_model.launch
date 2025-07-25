@@ -1,5 +1,4 @@
 <launch>
-
     <!-- 启动 USB 相机 -->
     <node pkg="usb_cam" type="usb_cam_node" name="usb_cam" output="screen">
         <param name="video_device" value="/dev/video0" />
@@ -18,6 +17,5 @@
         <param name="top_k" value="5" />
         <param name="visualization" value="false" />
     <!-- 目标点空间定位 -->
-    <!-- ode pkg="sterer_depth" type="object_detection_locate.py" name="object_detection_locate" output="screen" / -->
 
 </launch>
