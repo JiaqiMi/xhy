@@ -48,8 +48,8 @@ class TRT_YOLOv8:
         # 2) 分配缓冲区
         self.h_input = np.zeros(input_shape, dtype=np.float32)
         self.d_input = cuda.mem_alloc(self.h_input.nbytes)
-        C = 5 + 3                          # 若 80 类，可改
-        max_det = 6300                     # 假设最大检测数
+        C = 4 + 3                          # 若 80 类，可改
+        max_det = 8400                     # 假设最大检测数
         out_shape = (1, max_det, C)
         self.h_output = np.zeros(out_shape, dtype=np.float32)
         self.d_output = cuda.mem_alloc(self.h_output.nbytes)
