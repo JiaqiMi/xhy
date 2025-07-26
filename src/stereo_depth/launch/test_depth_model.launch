@@ -12,7 +12,7 @@
     <node pkg="stereo_splitter" type="split_stereo_image.py" name="split_stereo_image" output="screen" />
 
     <!-- 执行 YOLOv8 目标检测（使用 LD_PRELOAD） -->
-    <node pkg="yolo_bridge" type="yolo_wrapper.sh" name="yolo_v8_ros" output="screen" launch-prefix="bash" />
+    <node pkg="yolo_bridge" type="yolo_wrapper.sh" name="yolo_v8_ros" output="log" launch-prefix="bash" />
 
     <!-- 目标点空间定位 -->
     <node pkg="sterer_depth" type="object_detection_locate.py" name="object_detection_locate" output="screen" / >
