@@ -19,8 +19,21 @@ device = cuda.Device(0)  # 默认设备
 context_cuda = device.make_context()        # 创建 CUDA 上下文（全局上下文）
 
 # 参数定义
-DetectMode = rospy.get_param('~detect_mode', 1)
-TopK = rospy.get_param('~top_k', 3)
+DetectMode = rospy.get_param('~detect_mode', 1)          # 检测模式, 对应不同模型
+TopK = rospy.get_param('~top_k', 3)                      # 检测结果的最大数量
+Visualization = rospy.get_param('~visualization', True)  # 是否可视化检测结果
+
+mode_dict = {
+    1: "/home/xhy/catkin_ws/models/shapes_model0719_fp16.trt",
+    2: "/home/xhy/catkin_ws/models/holes_model0719_fp16.trt",
+    3: "/home/xhy/catkin_ws/models/balls_model0719_fp16.trt"
+}
+
+name_dict = {
+    1: ['circle', 'rectangle', 'triangle'],
+    2: ['red', 'green', 'black'],
+    3: ['red', 'blue']
+}
 
 class TRT_YOLOv8:
     def __init__(self, engine_path, input_shape=(1,3,640,640)):
@@ -35,8 +48,8 @@ class TRT_YOLOv8:
         # 2) 分配缓冲区
         self.h_input = np.zeros(input_shape, dtype=np.float32)
         self.d_input = cuda.mem_alloc(self.h_input.nbytes)
-        C = 5 + 3                          # 若 80 类，可改
-        max_det = 6300                     # 假设最大检测数
+        C = 4 + 3                          # 若 80 类，可改
+        max_det = 8400                     # 假设最大检测数
         out_shape = (1, max_det, C)
         self.h_output = np.zeros(out_shape, dtype=np.float32)
         self.d_output = cuda.mem_alloc(self.h_output.nbytes)
@@ -106,8 +119,18 @@ class TRT_YOLOv8:
 class YOLONode:
     def __init__(self):
         rospy.init_node("yolov8_tensorrt", anonymous=True)
-        engine_path = rospy.get_param('~engine_path',
-                                    "/home/xhy/catkin_ws/models/shapes_model0719_fp16.trt")
+        
+        if DetectMode == 1:
+            rospy.loginfo("Using shapes model for detection")
+        elif DetectMode == 2:
+            rospy.loginfo("Using holes model for detection")
+        elif DetectMode == 3:
+            rospy.loginfo("Using balls model for detection")
+        else:
+            DetectMode = 1
+            rospy.logwarn("DetectMode error: %s, using shapes model by default", str(DetectMode))
+        engine_path = mode_dict[DetectMode]
+
         self.detector = TRT_YOLOv8(engine_path)
         
         self.bridge = CvBridge()
@@ -133,25 +156,34 @@ class YOLONode:
             # v = int((box[1]+box[3])/2)
             pt = PointStamped()
             pt.header = msg.header
-            pt.header.frame_id = str(cls_id)
             pt.header.time = start_time
-            pt.point.x = u
-            pt.point.y = v 
+            pt.header.frame_id = name_dict[DetectMode][cls_id]
+            if DetectMode in (1, 3):
+                # 对于 shapes 和 balls 模型，发布中心点
+                pt.point.x = float(u)
+                pt.point.y = float(v)   
+            else:
+                # 对于 holes 模型，发布左上角点
+                pt.point.x = float(x1)
+                pt.point.y = float(y1)
             pt.point.z = score
             
-            rospy.loginfo("Valid target: time=%s, class=%s conf=%.2f -> u=%d v=%d" \
-            start_time, cls_id, self.score, u, v)
+            rospy.loginfo(
+                "Valid target: time=%s, class=%s conf=%.2f -> u=%d v=%d", \
+                    start_time, name_dict[DetectMode][cls_id], self.score, u, v)
             self.pub.publish(pt)
             
             # 可视化：绘制边框、类别与置信度
-            label = f"Class {int(cls_id)}: {score:.2f}"
-            cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(img, label, (x1, y1 - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+            if Visualization:
+                label = f"Class {name_dict[DetectMode][cls_id]}: {score:.2f}"
+                cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(img, label, (x1, y1 - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
 
         # 显示图像窗口
-        cv2.imshow("YOLOv8 Detection", img)
-        cv2.waitKey(1)
+        if Visualization:
+            cv2.imshow("YOLOv8 Detection", img)
+            cv2.waitKey(1)
 
 if __name__=="__main__":
     YOLONode()

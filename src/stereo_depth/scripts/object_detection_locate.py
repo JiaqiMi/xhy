@@ -151,7 +151,7 @@ class StereoDepthNode:
                 rospy.logwarn("Target pixel coordinates are out of bounds.")
         
 
-        # 发布相机事件
+        # 发布topic
         try:
             if X is not None:
                 depth_msg = self.bridge.cv2_to_imgmsg(depth, encoding="32FC1")
@@ -174,13 +174,7 @@ class StereoDepthNode:
                 self.target_message.publish(msg)
         except Exception as e:
             rospy.logerr("Error publishing depth: %s", str(e))
-
-        # 可视化（归一化视差）
-        # disp_vis = cv2.normalize(disparity, None, 0, 255, cv2.NORM_MINMAX)
-        # disp_vis = np.uint8(disp_vis)
-        # cv2.imshow("Disparity", disp_vis)
-        # cv2.imshow("Left", left_img)
-        # cv2.waitKey(1)
+            
 
 if __name__ == '__main__':
     try:
