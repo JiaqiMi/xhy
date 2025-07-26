@@ -27,16 +27,15 @@ datasets/xhy0718-holes/
 datasets/xhy0718-shapes/
 datasets/xhy0718-balls/
 
+
 # 忽略模型
 train_models/
 models/
 
 
-
-
-
 # 豁免相机参数文件
 !camera/*.txt
+!local_test/calculate_depth
 
 *.jpg
 *.mkv
