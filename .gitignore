@@ -35,8 +35,9 @@ models/
 
 # 豁免相机参数文件
 !camera/*.txt
-!local_test/calculate_depth
-!local_test/UI
+!local_test/calculate_depth/
+!local_test/aruco/
+!local_test/UI/
 
 *.jpg
 *.mkv
